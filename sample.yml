@@ -1,42 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
-metaData:
+metadata:
   name: first-deployment
   labels:
     app: netnumber
 spec:
   replicas: 3
-  selectors:
+  selector:
     matchLabels:
       app: netnumber
   template:
-    metadeta:
+    metadata:
       labels:
         app: netnumber
     spec:
       affinity:
-        nodeaffinity:
-          requiredDuringSchedulingIgnoreDuringExecution:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
                   - key: "worker_in"
                     operator: "In"
                     values:
                       - "true"
-    containers:
-      - name: oam-broker
-        image: oam-broker.jpg
-        ports: 
-          - containerPort: 80
-        env:
-          - name: oam-broker-env
-            value: "production"
-        resources:
-          request: 
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "256Mi"
+      containers:
+        - name: oam-broker
+          image: oam-broker.jpg
+          ports: 
+            - containerPort: 80
+          env:
+            - name: oam-broker-env
+              value: "production"
+          resources:
+            requests: 
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
 
 
