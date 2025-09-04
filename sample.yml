@@ -5,29 +5,38 @@ metaData:
   labels:
     app: netnumber
 spec:
- replicas: 3
- selectors:
-   matchLabels:
-     app: netnumber
- template:
-   metadeta:
-     labels:
-       app: netnumber
-  spec:
-   containers:
-    -name: oam-broker
-     image: oam-broker.jpg
-     ports: 
-     -containerPort: 80
-     env:
-     -name: oam-broker-env
-      value: "production"
-     resources:
-      request: 
-       cpu: "100m"
-       memory: "128Mi"
-      limits:
-       cpu: "500m"
-       memory: "256Mi"
+  replicas: 3
+  selectors:
+    matchLabels:
+      app: netnumber
+  template:
+    metadeta:
+      labels:
+        app: netnumber
+    spec:
+      affinity:
+        nodeaffinity:
+          requiredDuringSchedulingIgnoreDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "worker_in"
+                    operator: "In"
+                    values:
+                      - "true"
+    containers:
+      - name: oam-broker
+        image: oam-broker.jpg
+        ports: 
+          - containerPort: 80
+        env:
+          - name: oam-broker-env
+            value: "production"
+        resources:
+          request: 
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
 
 
