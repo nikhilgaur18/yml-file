@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: first-deployment
+  name: netnumber-deployment
   labels:
     app: netnumber
 spec:
@@ -16,13 +16,23 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
                   - key: "worker_in"
                     operator: "In"
                     values:
                       - "true"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - "oam-broker"
+              topologyKey: "kubernetes.io/hostname"       
       containers:
         - name: oam-broker
           image: oam-broker.jpg
